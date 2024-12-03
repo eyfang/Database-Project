@@ -35,4 +35,14 @@ public class WatchlistController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getUserWatchlist(@PathVariable Integer userId) {
+        try {
+            List<Watchlist> watchlists = watchlistService.getWatchlistByUserId(userId);
+            return ResponseEntity.ok(watchlists);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
