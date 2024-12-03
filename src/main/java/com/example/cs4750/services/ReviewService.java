@@ -22,9 +22,9 @@ public class ReviewService {
     private RatingRepository ratingRepository;
 
     public Review createReview(Integer userId, Integer movieId, String reviewText, Integer ratingValue) {
-        System.out.println("Creating review with rating: " + ratingValue); // Debug print
+        System.out.println("Creating review with rating: " + ratingValue);
 
-        // Create Review
+        // Create and save Review
         Review review = new Review();
         Integer newReviewId = reviewRepository.findMaxReviewId().orElse(0) + 1;
         review.setReviewId(newReviewId);
@@ -32,32 +32,20 @@ public class ReviewService {
         review.setMovieId(movieId);
         review.setDate(LocalDate.now());
         review.setReviewText(reviewText);
+        review.setRatingValue(ratingValue); // Set embedded rating value
 
-        Review savedReview = reviewRepository.save(review);
-        System.out.println("Saved review with ID: " + savedReview.getReviewId()); // Debug print
-
-        // Create Rating
-        if (ratingValue != null && ratingValue > 0) {
-            try {
-                Rating rating = new Rating();
-                Integer newRatingId = ratingRepository.findMaxRatingId().orElse(0) + 1;
-                rating.setRatingId(newRatingId);
-                rating.setReviewId(savedReview.getReviewId());
-                rating.setUserId(userId);
-                rating.setMovieId(movieId);
-                rating.setRatingValue(ratingValue);
-                Rating savedRating = ratingRepository.save(rating);
-                System.out.println("Saved rating with ID: " + savedRating.getRatingId()); // Debug print
-            } catch (Exception e) {
-                System.err.println("Error saving rating: " + e.getMessage()); // Debug print
-                e.printStackTrace();
-            }
-        }
-
-        return reviewRepository.findById(savedReview.getReviewId()).orElse(null);
+        return reviewRepository.save(review);
     }
+
 
     public List<Review> getMovieReviews(Integer movieId) {
         return reviewRepository.findByMovieId(movieId);
+//        List<Review> reviews = reviewRepository.findByMovieId(movieId);
+//        reviews.forEach(review -> {
+//            Rating rating = ratingRepository.findByReviewId(review.getReviewId()).orElse(null); // Fetch associated rating
+//            review.setRating(rating);
+//        });
+//        return reviews;
     }
+
 }

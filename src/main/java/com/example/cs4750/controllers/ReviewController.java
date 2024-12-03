@@ -23,7 +23,7 @@ public class ReviewController {
             List<Review> reviews = reviewService.getMovieReviews(movieId);
             reviews.forEach(review -> {
                 System.out.println("Review ID: " + review.getReviewId()
-                        + " Rating: " + (review.getRating() != null ? review.getRating().getRatingValue() : "no rating"));
+                        + " Rating: " + (review.getRatingValue() != null ? review.getRatingValue() : "no rating"));
             });
             return ResponseEntity.ok(reviews);
         } catch (Exception e) {

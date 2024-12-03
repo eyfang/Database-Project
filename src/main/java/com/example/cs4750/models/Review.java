@@ -24,6 +24,9 @@ public class Review {
     @Column(name = "ReviewText")
     private String reviewText;
 
+    @Column(name = "rating_value")
+    private Integer ratingValue;
+
     @ManyToOne
     @JoinColumn(name = "UserID", insertable = false, updatable = false)
     private User user;
@@ -31,7 +34,4 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "MovieID", insertable = false, updatable = false)
     private Movie movie;
-
-    @Transient
-    private Rating rating;
 }
