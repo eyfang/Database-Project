@@ -71,4 +71,13 @@ public class MovieController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/filter")
+    public ResponseEntity<List<Movie>> filterMovies(
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) String studioName,
+            @RequestParam(required = false) String directorName) {
+        List<Movie> filteredMovies = movieService.filterMovies(year, studioName, directorName);
+        return ResponseEntity.ok(filteredMovies);
+    }
+
 }

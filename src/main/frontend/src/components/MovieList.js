@@ -33,6 +33,9 @@ function MovieList() {
     const [detailsModalOpen, setDetailsModalOpen] = useState(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [year, setYear] = useState('');
+    const [studioName, setStudioName] = useState('');
+    const [directorName, setDirectorName] = useState('');
 
 
     useEffect(() => {
@@ -53,6 +56,23 @@ function MovieList() {
 
         fetchMovies();
     }, []);
+
+    const handleFilter = async () => {
+        console.log('Filters:', { year, studioName, directorName });
+        try {
+            const response = await axios.get('http://localhost:8080/api/movies/filter', {
+                params: {
+                    year: year || null,
+                    studioName: studioName || null,
+                    directorName: directorName || null
+                }
+            });
+            setMovies(response.data);
+        } catch (error) {
+            console.error('Error filtering movies:', error);
+        }
+    };
+
 
 
 
@@ -144,6 +164,32 @@ function MovieList() {
             <Typography variant="h4" component="h1" gutterBottom style={{ marginTop: '2rem' }}>
                 Movies ({movies.length})
             </Typography>
+            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                <TextField
+                    label="Year"
+                    variant="outlined"
+                    value={year}
+                    onChange={(e) => setYear(e.target.value)}
+                />
+                <TextField
+                    label="Studio Name"
+                    variant="outlined"
+                    value={studioName}
+                    onChange={(e) => setStudioName(e.target.value)}
+                />
+                <TextField
+                    label="Director Name"
+                    variant="outlined"
+                    value={directorName}
+                    onChange={(e) => setDirectorName(e.target.value)}
+                />
+                <Button
+                    variant="contained"
+                    onClick={handleFilter}
+                >
+                    Apply Filters
+                </Button>
+            </Box>
             <Box sx={{ display: 'flex', gap: 1, mb: 3, mt: 2 }}>
                 <TextField
                     fullWidth
