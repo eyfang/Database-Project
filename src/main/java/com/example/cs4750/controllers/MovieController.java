@@ -23,6 +23,12 @@ public class MovieController {
     public List<Movie> getAllMovies() {
         List<Movie> movies = movieRepository.findAll();
         System.out.println("Found " + movies.size() + " movies");
+
+        movies.forEach(movie -> {
+            Double avgRating = movieService.getMovieRating(movie.getMovieId());
+            movie.setAverageRating(avgRating);
+        });
+
         return movies;
     }
 
@@ -38,10 +44,10 @@ public class MovieController {
         return ResponseEntity.ok(movieService.searchMoviesByTitle(title));
     }
 
-    @GetMapping("/{id}/rating")
-    public ResponseEntity<?> getMovieRating(@PathVariable Integer id) {
-        Double rating = movieService.getMovieRating(id);
-        return rating != null ? ResponseEntity.ok(rating) : ResponseEntity.notFound().build();
+    @GetMapping("/{id}/averageRating")
+    public ResponseEntity<Double> getAverageRating(@PathVariable Integer id) {
+        Double averageRating = movieService.getMovieRating(id);
+        return averageRating != null ? ResponseEntity.ok(averageRating) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/test")

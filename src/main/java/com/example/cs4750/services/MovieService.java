@@ -3,6 +3,7 @@ package com.example.cs4750.services;
 import com.example.cs4750.models.Movie;
 import com.example.cs4750.repositories.MovieRepository;
 import com.example.cs4750.repositories.RatingRepository;
+import com.example.cs4750.repositories.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -14,21 +15,42 @@ public class MovieService {
     private MovieRepository movieRepository;
 
     @Autowired
-    private RatingRepository ratingRepository;
+    private ReviewRepository reviewRepository;
 
     public List<Movie> getAllMovies() {
-        return movieRepository.findAll();
+        List<Movie> movies = movieRepository.findAll(); // Fetch all movies
+        movies.forEach(movie -> {
+            Double avgRating = reviewRepository.getAverageRatingForMovie(movie.getMovieId());
+            movie.setAverageRating(avgRating); // Set the transient field
+        });
+        return movies;
     }
 
     public Optional<Movie> getMovieById(Integer id) {
-        return movieRepository.findById(id);
+        Optional<Movie> movieOptional = movieRepository.findById(id);
+        movieOptional.ifPresent(movie -> {
+            Double avgRating = reviewRepository.getAverageRatingForMovie(movie.getMovieId());
+            movie.setAverageRating(avgRating);
+        });
+        return movieOptional;
     }
+
 
     public List<Movie> searchMoviesByTitle(String title) {
         return movieRepository.findByTitleContainingIgnoreCase(title);
     }
 
     public Double getMovieRating(Integer movieId) {
-        return ratingRepository.getAverageRatingForMovie(movieId);
+        return reviewRepository.getAverageRatingForMovie(movieId);
     }
+
+    public List<Movie> getMoviesWithRatings() {
+        List<Movie> movies = movieRepository.findAll();
+        movies.forEach(movie -> {
+            Double avgRating = reviewRepository.getAverageRatingForMovie(movie.getMovieId());
+            movie.setAverageRating(avgRating);
+        });
+        return movies;
+    }
+
 }

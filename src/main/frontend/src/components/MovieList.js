@@ -40,7 +40,7 @@ function MovieList() {
             try {
                 setLoading(true);
                 const response = await axios.get('http://localhost:8080/api/movies');
-                console.log('Response:', response.data);
+                console.log('Response:', response.data); // Log to verify averageRating
                 setMovies(response.data);
                 setError(null);
             } catch (err) {
@@ -53,6 +53,8 @@ function MovieList() {
 
         fetchMovies();
     }, []);
+
+
 
     const handleSnackbarClose = () => {
         setSnackbarOpen(false);
@@ -196,7 +198,7 @@ function MovieList() {
                                 <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <Box>
                                         <Typography color="primary">
-                                            Rating: {movie.rating || 'No ratings yet'}
+                                            Average Rating: {movie.averageRating ? movie.averageRating.toFixed(1) : 'No ratings yet'}
                                         </Typography>
                                     </Box>
                                     <Box sx={{ display: 'flex', gap: 1 }}>

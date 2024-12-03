@@ -28,4 +28,7 @@ public class Movie {
     @ManyToOne
     @JoinColumn(name = "WriterID")
     private Writer writer;
+
+    @Transient
+    private Double averageRating;
 }

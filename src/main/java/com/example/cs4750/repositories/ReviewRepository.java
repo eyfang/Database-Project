@@ -14,5 +14,8 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
 
     @Query("SELECT MAX(r.reviewId) FROM Review r")
     Optional<Integer> findMaxReviewId();
-    //test
+
+    @Query("SELECT AVG(r.ratingValue) FROM Review r WHERE r.movieId = :movieId")
+    Double getAverageRatingForMovie(@Param("movieId") Integer movieId);
+
 }
