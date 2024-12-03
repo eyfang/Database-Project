@@ -1,4 +1,3 @@
-// src/main/java/com/example/cs4750/controllers/AuthController.java
 package com.example.cs4750.controllers;
 
 import com.example.cs4750.dtos.LoginRequest;
@@ -49,7 +48,6 @@ class RegisterRequest {
     private String password;
     private String bio;
 
-    // Add getters and setters
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
     public String getEmail() { return email; }

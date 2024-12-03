@@ -15,7 +15,6 @@ import {
     Divider
 } from '@mui/material';
 import axios from 'axios';
-import StarOutlineIcon from '@mui/icons-material/StarOutline';
 
 function ReviewDialog({ open, onClose, movieId, movieTitle, onMovieUpdate }) {
     const [reviews, setReviews] = useState([]);
@@ -28,6 +27,8 @@ function ReviewDialog({ open, onClose, movieId, movieTitle, onMovieUpdate }) {
             fetchReviews();
         }
     }, [open, movieId]);
+
+    const currentUser = JSON.parse(localStorage.getItem('user'));
 
     const fetchReviews = async () => {
         try {
@@ -64,13 +65,36 @@ function ReviewDialog({ open, onClose, movieId, movieTitle, onMovieUpdate }) {
 
             setNewReview('');
             setRating(0);
-            //fetchReviews();
+            fetchReviews();
         } catch (error) {
             console.error('Error submitting review:', error);
         } finally {
             setLoading(false);
         }
     };
+
+    const handleDeleteReview = async (reviewId) => {
+        try {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user) {
+                alert('Please login to delete a review');
+                return;
+            }
+
+            await axios.delete(`http://localhost:8080/api/reviews/${reviewId}`, {
+                params: { userId: user.userId }
+            });
+            fetchReviews();
+            const updatedMovieResponse = await axios.get(`http://localhost:8080/api/movies/${movieId}/refresh`);
+            if (onMovieUpdate) {
+                onMovieUpdate(updatedMovieResponse.data);
+            }
+        } catch (error) {
+            console.error('Error deleting review:', error);
+            alert('Failed to delete review.');
+        }
+    };
+
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
@@ -86,7 +110,7 @@ function ReviewDialog({ open, onClose, movieId, movieTitle, onMovieUpdate }) {
                                             <Typography>{review.user?.name}</Typography>
                                             <Box>
                                                 <MuiRating
-                                                    value={parseInt(review.ratingValue) || 0} // Use review.ratingValue directly
+                                                    value={parseInt(review.ratingValue) || 0}
                                                     readOnly
                                                     size="small"
                                                 />
@@ -107,6 +131,15 @@ function ReviewDialog({ open, onClose, movieId, movieTitle, onMovieUpdate }) {
                                         </Box>
                                     }
                                 />
+                                {review.userId === currentUser?.userId && (
+                                    <Button
+                                        variant="outlined"
+                                        color="secondary"
+                                        onClick={() => handleDeleteReview(review.reviewId)}
+                                    >
+                                        Delete
+                                    </Button>
+                                )}
                             </ListItem>
                             <Divider />
                         </React.Fragment>

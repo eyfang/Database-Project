@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,13 +19,10 @@ public class ReviewService {
     @Autowired
     private ReviewRepository reviewRepository;
 
-    @Autowired
-    private RatingRepository ratingRepository;
 
     public Review createReview(Integer userId, Integer movieId, String reviewText, Integer ratingValue) {
         System.out.println("Creating review with rating: " + ratingValue);
 
-        // Create and save Review
         Review review = new Review();
         Integer newReviewId = reviewRepository.findMaxReviewId().orElse(0) + 1;
         review.setReviewId(newReviewId);
@@ -32,20 +30,26 @@ public class ReviewService {
         review.setMovieId(movieId);
         review.setDate(LocalDate.now());
         review.setReviewText(reviewText);
-        review.setRatingValue(ratingValue); // Set embedded rating value
+        review.setRatingValue(ratingValue);
 
         return reviewRepository.save(review);
     }
 
-
     public List<Review> getMovieReviews(Integer movieId) {
         return reviewRepository.findByMovieId(movieId);
-//        List<Review> reviews = reviewRepository.findByMovieId(movieId);
-//        reviews.forEach(review -> {
-//            Rating rating = ratingRepository.findByReviewId(review.getReviewId()).orElse(null); // Fetch associated rating
-//            review.setRating(rating);
-//        });
-//        return reviews;
     }
+
+    public boolean deleteReview(Integer reviewId, Integer userId) {
+        Optional<Review> reviewOptional = reviewRepository.findById(reviewId);
+        if (reviewOptional.isPresent()) {
+            Review review = reviewOptional.get();
+            if (review.getUserId().equals(userId)) {
+                reviewRepository.delete(review);
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 }

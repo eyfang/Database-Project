@@ -46,4 +46,19 @@ public class ReviewController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<?> deleteReview(@PathVariable Integer reviewId, @RequestParam Integer userId) {
+        try {
+            boolean isDeleted = reviewService.deleteReview(reviewId, userId);
+            if (isDeleted) {
+                return ResponseEntity.ok("Review deleted successfully.");
+            } else {
+                return ResponseEntity.status(403).body("You can only delete your own reviews.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Failed to delete review: " + e.getMessage());
+        }
+    }
+
 }
