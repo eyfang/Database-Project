@@ -29,8 +29,9 @@ function WatchList() {
                 const response = await axios.get(`http://localhost:8080/api/watchlists/user/${user.userId}`);
                 setWatchlist(response.data);
                 setLoading(false);
-            } catch (err) {
-                setError(err.message);
+            } catch (error) {
+                console.error('Error fetching watchlist:', error);
+                setError(error.message);
                 setLoading(false);
             }
         };

@@ -1,4 +1,3 @@
-// src/main/frontend/src/components/ReviewDialog.js
 import React, { useState, useEffect } from 'react';
 import {
     Dialog,
