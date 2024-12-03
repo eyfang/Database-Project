@@ -14,4 +14,5 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
 
     @Query("SELECT MAX(r.reviewId) FROM Review r")
     Optional<Integer> findMaxReviewId();
+    //test
 }
