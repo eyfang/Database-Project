@@ -113,6 +113,14 @@ function MovieList() {
         }
     };
 
+    const handleMovieUpdate = (updatedMovie) => {
+        setMovies((prevMovies) =>
+            prevMovies.map((movie) =>
+                movie.movieId === updatedMovie.movieId ? updatedMovie : movie
+            )
+        );
+    };
+
     if (loading) {
         return (
             <Container style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
@@ -229,6 +237,7 @@ function MovieList() {
                 onClose={() => setReviewDialogOpen(false)}
                 movieId={selectedMovie?.movieId}
                 movieTitle={selectedMovie?.title}
+                onMovieUpdate={handleMovieUpdate}
             />
 
             <Dialog

@@ -59,4 +59,16 @@ public class MovieController {
             return ResponseEntity.status(500).body("Database connection failed: " + e.getMessage());
         }
     }
+
+    @GetMapping("/{id}/refresh")
+    public ResponseEntity<Movie> getUpdatedMovie(@PathVariable Integer id) {
+        return movieService.getMovieById(id)
+                .map(movie -> {
+                    Double avgRating = movieService.getMovieRating(id);
+                    movie.setAverageRating(avgRating);
+                    return ResponseEntity.ok(movie);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
 }

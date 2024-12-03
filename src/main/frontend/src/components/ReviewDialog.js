@@ -17,7 +17,7 @@ import {
 import axios from 'axios';
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
 
-function ReviewDialog({ open, onClose, movieId, movieTitle }) {
+function ReviewDialog({ open, onClose, movieId, movieTitle, onMovieUpdate }) {
     const [reviews, setReviews] = useState([]);
     const [newReview, setNewReview] = useState('');
     const [rating, setRating] = useState(0);
@@ -57,9 +57,14 @@ function ReviewDialog({ open, onClose, movieId, movieTitle }) {
                 rating: rating
             });
 
+            const updatedMovieResponse = await axios.get(`http://localhost:8080/api/movies/${movieId}/refresh`);
+            if (onMovieUpdate) {
+                onMovieUpdate(updatedMovieResponse.data);
+            }
+
             setNewReview('');
             setRating(0);
-            fetchReviews();
+            //fetchReviews();
         } catch (error) {
             console.error('Error submitting review:', error);
         } finally {
