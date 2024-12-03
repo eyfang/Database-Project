@@ -32,7 +32,7 @@ function ReviewDialog({ open, onClose, movieId, movieTitle }) {
     const fetchReviews = async () => {
         try {
             const response = await axios.get(`http://localhost:8080/api/reviews/movie/${movieId}`);
-            console.log('Reviews from server:', response.data);  // See what data you're getting
+            console.log('Reviews from server:', response.data);
             setReviews(response.data);
         } catch (error) {
             console.error('Error fetching reviews:', error);
@@ -81,12 +81,12 @@ function ReviewDialog({ open, onClose, movieId, movieTitle }) {
                                             <Typography>{review.user?.name}</Typography>
                                             <Box>
                                                 <MuiRating
-                                                    value={parseInt(review.ratings?.[0]?.ratingValue) || 0}
+                                                    value={parseInt(review.ratingValue) || 0} // Use review.ratingValue directly
                                                     readOnly
                                                     size="small"
                                                 />
                                                 <Typography variant="caption">
-                                                    (Rating value: {review.rating?.ratingValue})
+                                                    (Rating value: {review.ratingValue || 'No rating'})
                                                 </Typography>
                                             </Box>
                                         </Box>
